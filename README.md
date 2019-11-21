@@ -1,5 +1,6 @@
 # Circular Text Widget
 
+[![pub package](https://img.shields.io/pub/v/flutter_circular_text.svg)](https://pub.dartlang.org/packages/flutter_circular_text)
 
 ## Installation
 
