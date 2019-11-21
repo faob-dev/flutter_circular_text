@@ -7,7 +7,7 @@
 Add dependency in `pubspec.yaml`:
 ```yaml
 dependencies:
-  flutter_circular_text: "^0.1.0"
+  flutter_circular_text: "^0.2.0"
 ```
 
 Import in your project:
@@ -29,7 +29,6 @@ CircularText(
   spacing: 10,
   startAngle: 0,
   backgroundPaint: Paint()..color = Colors.grey.shade200,
-  backgroundShape: BackgroundShape.circle,
   position: CircularTextPosition.inside,
   direction: CircularTextDirection.clockwise
 )
