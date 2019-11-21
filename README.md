@@ -39,8 +39,12 @@ CircularText(
 [example](https://github.com/faob-dev/flutter_circular_text/tree/master/example) project contains demo
 
 ### Demo
+
+##### v 0.1.0
 ![alt tag](https://raw.githubusercontent.com/faob-dev/flutter_circular_text/master/screenshots/circular_text.gif)
 
+##### v 0.2.0
+![alt tag](https://raw.githubusercontent.com/faob-dev/flutter_circular_text/master/screenshots/circular_text1.gif)
 
 ## Changelog
 Check [Changelog](https://github.com/faob-dev/flutter_circular_text/blob/master/CHANGELOG.md) for updates

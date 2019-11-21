@@ -15,8 +15,9 @@ class CircularTextDemo extends StatefulWidget {
 class _CircularTextDemoState extends State<CircularTextDemo> {
   double _spacing = 10;
   double _startAngle = 0;
+  double _strokeWidth = 0.0;
+  bool _showStroke = false;
   bool _showBackground = true;
-  BackgroundShape _backgroundShape = BackgroundShape.circle;
   CircularTextPosition _position = CircularTextPosition.inside;
   CircularTextDirection _direction = CircularTextDirection.clockwise;
 
@@ -26,7 +27,7 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
       child: Container(
         color: Colors.white,
         alignment: Alignment.center,
-        padding: EdgeInsets.only(left: 10, right: 10, top: 40, bottom: 10),
+        padding: EdgeInsets.only(left: 10, right: 10, top: 50, bottom: 10),
         child: SizedBox.fromSize(
           size: Size(360, double.infinity),
           child: Column(
@@ -39,12 +40,12 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
                 flex: 1,
                 child: CustomScrollView(
                   slivers: <Widget>[
-                    buildSpacingSlider(),
-                    buildSStartAngleSlider(),
-                    buildShowBackgroundShapeCheckBox(),
-                    buildBackgroundShapeChoiceBox(),
-                    buildCircularTextPositionChoiceBox(),
-                    buildCircularTextDirectionChoiceBox(),
+                    buildSpacingPanel(),
+                    buildStartAnglePanel(),
+                    buildStrokeWidthPanel(),
+                    buildShowBackgroundShapePanel(),
+                    buildCircularTextPositionPanel(),
+                    buildCircularTextDirectionPanel(),
                   ],
                 ),
               ),
@@ -55,28 +56,34 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
     );
   }
 
-  Widget buildCircularTextWidget(){
+  Widget buildCircularTextWidget() {
+    final backgroundPaint = Paint();
+    if (_showBackground) {
+      backgroundPaint..color = Colors.grey.shade200;
+      if (_showStroke) {
+        backgroundPaint
+          ..color = Colors.grey.shade200
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = _strokeWidth;
+      }
+    } else {
+      backgroundPaint.color = Colors.transparent;
+    }
+
     return CircularText(
       text: "circular text widget",
       textStyle: TextStyle(
-          fontSize: 25,
-          color: Colors.blue,
-          fontWeight: FontWeight.bold
-      ),
+          fontSize: 25, color: Colors.blue, fontWeight: FontWeight.bold),
       radius: 125,
       spacing: _spacing,
       startAngle: _startAngle,
-      backgroundPaint: Paint()
-        ..color = _showBackground
-            ? Colors.grey.shade200
-            : Colors.transparent,
-      backgroundShape: _backgroundShape,
+      backgroundPaint: backgroundPaint,
       position: _position,
       direction: _direction,
     );
   }
 
-  Widget buildSpacingSlider(){
+  Widget buildSpacingPanel() {
     return SliverToBoxAdapter(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +102,7 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
     );
   }
 
-  Widget buildSStartAngleSlider(){
+  Widget buildStartAnglePanel() {
     return SliverToBoxAdapter(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,35 +121,52 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
     );
   }
 
-  Widget buildBackgroundShapeChoiceBox(){
+  Widget buildStrokeWidthPanel() {
     return SliverToBoxAdapter(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text("BACKGROUND SHAPE", style: TextStyle(fontWeight: FontWeight.bold)),
-          DropdownButton<BackgroundShape>(
-            value: _backgroundShape,
-            items: [
-              DropdownMenuItem(
-                child: Text("CIRCLE"),
-                value: BackgroundShape.circle,
-              ),
-              DropdownMenuItem(
-                child: Text("RECTANGLE"),
-                value: BackgroundShape.rectangle,
-              )
-            ],
+          Text("STROKE WIDTH", style: TextStyle(fontWeight: FontWeight.bold)),
+          Slider(
+            value: _strokeWidth,
+            min: 0,
+            max: 100,
+            onChanged: _showStroke
+                ? (value) {
+                    setState(() => _strokeWidth = value);
+                  }
+                : null,
+          ),
+          Checkbox(
+            value: _showStroke,
             onChanged: (value) {
-              setState(() => _backgroundShape = value);
+              setState(() => _showStroke = value);
             },
           )
-
         ],
       ),
     );
   }
 
-  Widget buildCircularTextPositionChoiceBox(){
+  Widget buildShowBackgroundShapePanel() {
+    return SliverToBoxAdapter(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text("SHOW BACKGROUND",
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          Checkbox(
+            value: _showBackground,
+            onChanged: (value) {
+              setState(() => _showBackground = value);
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildCircularTextPositionPanel() {
     return SliverToBoxAdapter(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,7 +193,7 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
     );
   }
 
-  Widget buildCircularTextDirectionChoiceBox(){
+  Widget buildCircularTextDirectionPanel() {
     return SliverToBoxAdapter(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -189,23 +213,6 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
             ],
             onChanged: (value) {
               setState(() => _direction = value);
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget buildShowBackgroundShapeCheckBox(){
-    return SliverToBoxAdapter(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text("SHOW BACKGROUND", style: TextStyle(fontWeight: FontWeight.bold)),
-          Checkbox(
-            value: _showBackground,
-            onChanged: (value) {
-              setState(() => _showBackground = value);
             },
           )
         ],

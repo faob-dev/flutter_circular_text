@@ -1,7 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_circular_text/circular_text/enums.dart';
+
+enum CircularTextDirection { clockwise, anticlockwise }
+
+enum CircularTextPosition { outside, inside }
 
 class CircularText extends StatelessWidget {
   //Text
@@ -22,9 +24,6 @@ class CircularText extends StatelessWidget {
   //Background shape paint
   final Paint backgroundPaint;
 
-  //Background shape either circle or rectangle
-  final BackgroundShape backgroundShape;
-
   //Text position either outside or inside circle
   final CircularTextPosition position;
 
@@ -39,7 +38,6 @@ class CircularText extends StatelessWidget {
       this.spacing = 10,
       this.startAngle = 0,
       Paint backgroundPaint,
-      this.backgroundShape = BackgroundShape.circle,
       this.position = CircularTextPosition.inside,
       this.direction = CircularTextDirection.clockwise})
       : assert(text != null),
@@ -47,8 +45,8 @@ class CircularText extends StatelessWidget {
         assert(radius != null && radius >= 0),
         assert(spacing != null && spacing >= 0),
         assert(startAngle != null && startAngle >= 0),
-        this.backgroundPaint = backgroundPaint ?? (backgroundPaint = Paint()..color = Colors.transparent),
-        assert(backgroundShape != null),
+        this.backgroundPaint = backgroundPaint ??
+            (backgroundPaint = Paint()..color = Colors.transparent),
         assert(position != null),
         assert(direction != null),
         super(key: key);
@@ -65,7 +63,6 @@ class CircularText extends StatelessWidget {
               spacing: spacing,
               startAngle: startAngle,
               backgroundPaint: backgroundPaint,
-              backgroundShape: backgroundShape,
               position: position,
               direction: direction),
         ),
@@ -80,7 +77,6 @@ class CircularTextPainter extends CustomPainter {
   final double spacing;
   final double startAngle;
   final Paint backgroundPaint;
-  final BackgroundShape backgroundShape;
   final CircularTextPosition position;
   final CircularTextDirection direction;
 
@@ -93,7 +89,6 @@ class CircularTextPainter extends CustomPainter {
       this.spacing,
       this.startAngle,
       this.backgroundPaint,
-      this.backgroundShape,
       this.position,
       this.direction}) {
     for (final char in text.toUpperCase().split("")) {
@@ -109,12 +104,7 @@ class CircularTextPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _radius = min(size.width / 2, size.height / 2);
     canvas.translate(size.width / 2, size.height / 2);
-
-    if (backgroundShape == BackgroundShape.rectangle)
-      canvas.drawRect(
-          Offset(-size.width / 2, -size.height / 2) & size, backgroundPaint);
-    else
-      canvas.drawCircle(Offset.zero, _radius, backgroundPaint);
+    canvas.drawCircle(Offset.zero, _radius, backgroundPaint);
 
     if (direction == CircularTextDirection.clockwise) {
       _paintTextClockwise(canvas, size);
@@ -124,13 +114,17 @@ class CircularTextPainter extends CustomPainter {
   }
 
   void _paintTextClockwise(Canvas canvas, Size size) {
+    bool hasStrokeStyle = backgroundPaint.style == PaintingStyle.stroke &&
+        backgroundPaint.strokeWidth > 0.0;
+
     canvas.rotate((startAngle - 90) * pi / 180);
     for (int i = 0; i < _charPainters.length; i++) {
       final tp = _charPainters[i];
       final x = -tp.width / 2;
       final y = position == CircularTextPosition.outside
-          ? -_radius - tp.height
-          : -_radius;
+          ? (-_radius - tp.height) -
+              (hasStrokeStyle ? backgroundPaint.strokeWidth / 2 : 0.0)
+          : -_radius - (hasStrokeStyle ? tp.height / 2 : 0.0);
 
       tp.paint(canvas, Offset(x, y));
       canvas.rotate(spacing * pi / 180);
@@ -138,14 +132,16 @@ class CircularTextPainter extends CustomPainter {
   }
 
   void _paintTextAntiClockwise(Canvas canvas, Size size) {
+    bool hasStrokeStyle = backgroundPaint.style == PaintingStyle.stroke &&
+        backgroundPaint.strokeWidth > 0.0;
+
     canvas.rotate((-startAngle - 270) * pi / 180);
     for (int i = 0; i < _charPainters.length; i++) {
       final tp = _charPainters[i];
-
       final x = -tp.width / 2;
       final y = position == CircularTextPosition.outside
-          ? _radius
-          : _radius - tp.height;
+          ? _radius + (hasStrokeStyle ? backgroundPaint.strokeWidth / 2 : 0.0)
+          : (_radius - tp.height) + (hasStrokeStyle ? tp.height / 2 : 0.0);
 
       tp.paint(canvas, Offset(x, y));
       canvas.rotate(-spacing * pi / 180);
@@ -159,7 +155,6 @@ class CircularTextPainter extends CustomPainter {
       oldDelegate.spacing != spacing ||
       oldDelegate.startAngle != startAngle ||
       oldDelegate.backgroundPaint != backgroundPaint ||
-      oldDelegate.backgroundShape != backgroundShape ||
       oldDelegate.position != position ||
       oldDelegate.direction != direction;
 }
