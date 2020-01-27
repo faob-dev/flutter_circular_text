@@ -7,7 +7,7 @@
 Add dependency in `pubspec.yaml`:
 ```yaml
 dependencies:
-  flutter_circular_text: "^0.2.0"
+  flutter_circular_text: "^0.2.1"
 ```
 
 Import in your project:
@@ -19,18 +19,17 @@ import 'package:flutter_circular_text/circular_text.dart';
 
 ```dart
 CircularText(
-  text: "circular text widget",
-  textStyle: TextStyle(
-      fontSize: 25,
-      color: Colors.blue,
-      fontWeight: FontWeight.bold
-  ),
-  radius: 125,
-  spacing: 10,
-  startAngle: 0,
-  backgroundPaint: Paint()..color = Colors.grey.shade200,
-  position: CircularTextPosition.inside,
-  direction: CircularTextDirection.clockwise
+    text: Text(
+    "circular text widget",
+    style: TextStyle(
+        fontSize: 25, color: Colors.blue, fontWeight: FontWeight.bold),
+    ),
+    radius: 125,
+    space: 10,
+    startAngle: 180,
+    position: CircularTextPosition.inside,
+    direction: CircularTextDirection.clockwise,
+    backgroundPaint: Paint()..color = Colors.grey.shade200,
 )
 ```
 
