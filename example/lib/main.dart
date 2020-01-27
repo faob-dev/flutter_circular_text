@@ -13,8 +13,8 @@ class CircularTextDemo extends StatefulWidget {
 }
 
 class _CircularTextDemoState extends State<CircularTextDemo> {
-  double _spacing = 10;
-  double _startAngle = 0;
+  double _space = 10;
+  double _startAngle = 180;
   double _strokeWidth = 0.0;
   bool _showStroke = false;
   bool _showBackground = true;
@@ -71,11 +71,13 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
     }
 
     return CircularText(
-      text: "circular text widget",
-      textStyle: TextStyle(
-          fontSize: 25, color: Colors.blue, fontWeight: FontWeight.bold),
+      text: Text(
+        "circular text widget",
+        style: TextStyle(
+            fontSize: 25, color: Colors.blue, fontWeight: FontWeight.bold),
+      ),
       radius: 125,
-      spacing: _spacing,
+      space: _space,
       startAngle: _startAngle,
       backgroundPaint: backgroundPaint,
       position: _position,
@@ -88,13 +90,13 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text("SPACING", style: TextStyle(fontWeight: FontWeight.bold)),
+          Text("SPACE", style: TextStyle(fontWeight: FontWeight.bold)),
           Slider(
-            value: _spacing,
+            value: _space,
             min: 0,
             max: 30,
             onChanged: (value) {
-              setState(() => _spacing = value);
+              setState(() => _space = value);
             },
           )
         ],
@@ -112,6 +114,8 @@ class _CircularTextDemoState extends State<CircularTextDemo> {
             value: _startAngle,
             min: 0,
             max: 360,
+            divisions: 4,
+            label: "${_startAngle.toInt()}",
             onChanged: (value) {
               setState(() => _startAngle = value);
             },
