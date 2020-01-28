@@ -1,47 +1,29 @@
 import 'dart:math';
+import 'model.dart';
 import 'package:flutter/material.dart';
 
-enum CircularTextDirection { clockwise, anticlockwise }
-
-enum CircularTextPosition { outside, inside }
-
 class CircularText extends StatelessWidget {
-  //Text
-  final Text text;
+  ///List of text
+  final List<TextItem> children;
 
-  //Circle radius
+  /// Circle radius
   final double radius;
 
-  //Spacing between characters
-  final double space;
-
-  //Text starting position
-  final double startAngle;
-
-  //Text position either outside or inside circle
+  /// Text position either outside or inside circle
   final CircularTextPosition position;
 
-  //Text direction either clockwise or anticlockwise
-  final CircularTextDirection direction;
-
-  //Background shape paint
+  /// Background paint
   final Paint backgroundPaint;
 
-  CircularText(
-      {Key key,
-      @required this.text,
-      this.radius = 125,
-      this.space = 10,
-      this.startAngle = 0,
-      Paint backgroundPaint,
-      this.position = CircularTextPosition.inside,
-      this.direction = CircularTextDirection.clockwise})
-      : assert(text != null),
+  CircularText({
+    Key key,
+    @required this.children,
+    this.radius = 125,
+    this.position = CircularTextPosition.inside,
+    Paint backgroundPaint,
+  })  : assert(children != null),
         assert(radius != null && radius >= 0),
-        assert(space != null && space >= 0),
-        assert(startAngle != null),
         assert(position != null),
-        assert(direction != null),
         this.backgroundPaint = backgroundPaint ??
             (backgroundPaint = Paint()..color = Colors.transparent),
         super(key: key);
@@ -53,11 +35,8 @@ class CircularText extends StatelessWidget {
         size: Size(2 * radius, 2 * radius),
         child: CustomPaint(
           painter: _CircularTextPainter(
-            text: text,
-            space: space,
-            startAngle: startAngle,
+            children: children,
             position: position,
-            direction: direction,
             backgroundPaint: backgroundPaint,
             textDirection: Directionality.of(context),
           ),
@@ -68,31 +47,19 @@ class CircularText extends StatelessWidget {
 }
 
 class _CircularTextPainter extends CustomPainter {
-  final Text text;
-  final double space;
-  final double startAngle;
+  final List<TextItem> children;
   final CircularTextPosition position;
-  final CircularTextDirection direction;
   final Paint backgroundPaint;
+  final TextDirection textDirection;
 
   double _radius = 0.0;
-  List<TextPainter> _charPainters = [];
 
-  _CircularTextPainter(
-      {this.text,
-      this.space,
-      this.startAngle,
-      this.position,
-      this.direction,
-      this.backgroundPaint,
-      TextDirection textDirection}) {
-    for (final char in text.data.toUpperCase().split("")) {
-      _charPainters.add(TextPainter(
-          text: TextSpan(text: char, style: text.style),
-          textDirection: textDirection)
-        ..layout());
-    }
-  }
+  _CircularTextPainter({
+    this.children,
+    this.position,
+    this.backgroundPaint,
+    this.textDirection,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -100,18 +67,32 @@ class _CircularTextPainter extends CustomPainter {
     canvas.translate(size.width / 2, size.height / 2);
     canvas.drawCircle(Offset.zero, _radius, backgroundPaint);
 
-    if (direction == CircularTextDirection.clockwise) {
-      _paintTextClockwise(canvas, size);
-    } else {
-      _paintTextAntiClockwise(canvas, size);
+    for (final textItem in children) {
+      canvas.save();
+      List<TextPainter> _charPainters = [];
+      Text text = textItem.text;
+      for (final char in text.data.split("")) {
+        _charPainters.add(TextPainter(
+            text: TextSpan(text: char, style: text.style),
+            textDirection: textDirection)
+          ..layout());
+      }
+      if (textItem.direction == CircularTextDirection.clockwise) {
+        _paintTextClockwise(canvas, size, textItem, _charPainters);
+      } else {
+        _paintTextAntiClockwise(canvas, size, textItem, _charPainters);
+      }
+      canvas.restore();
     }
   }
 
-  void _paintTextClockwise(Canvas canvas, Size size) {
+  void _paintTextClockwise(Canvas canvas, Size size, TextItem textItem,
+      List<TextPainter> _charPainters) {
     bool hasStrokeStyle = backgroundPaint.style == PaintingStyle.stroke &&
         backgroundPaint.strokeWidth > 0.0;
 
-    canvas.rotate((startAngle + 90) * pi / 180);
+    double angleShift = _calculateAngleShift(textItem, _charPainters.length);
+    canvas.rotate((textItem.startAngle + 90 - angleShift) * pi / 180);
     for (int i = 0; i < _charPainters.length; i++) {
       final tp = _charPainters[i];
       final x = -tp.width / 2;
@@ -121,15 +102,17 @@ class _CircularTextPainter extends CustomPainter {
           : -_radius - (hasStrokeStyle ? tp.height / 2 : 0.0);
 
       tp.paint(canvas, Offset(x, y));
-      canvas.rotate(space * pi / 180);
+      canvas.rotate(textItem.space * pi / 180);
     }
   }
 
-  void _paintTextAntiClockwise(Canvas canvas, Size size) {
+  void _paintTextAntiClockwise(Canvas canvas, Size size, TextItem textItem,
+      List<TextPainter> _charPainters) {
     bool hasStrokeStyle = backgroundPaint.style == PaintingStyle.stroke &&
         backgroundPaint.strokeWidth > 0.0;
 
-    canvas.rotate((startAngle - 90) * pi / 180);
+    double angleShift = _calculateAngleShift(textItem, _charPainters.length);
+    canvas.rotate((textItem.startAngle - 90 + angleShift) * pi / 180);
     for (int i = 0; i < _charPainters.length; i++) {
       final tp = _charPainters[i];
       final x = -tp.width / 2;
@@ -138,16 +121,67 @@ class _CircularTextPainter extends CustomPainter {
           : (_radius - tp.height) + (hasStrokeStyle ? tp.height / 2 : 0.0);
 
       tp.paint(canvas, Offset(x, y));
-      canvas.rotate(-space * pi / 180);
+      canvas.rotate(-textItem.space * pi / 180);
     }
   }
 
+  double _calculateAngleShift(TextItem textItem, int textLength) {
+    double angleShift = -1;
+    switch (textItem.startAngleAlignment) {
+      case StartAngleAlignment.start:
+        angleShift = 0;
+        break;
+      case StartAngleAlignment.center:
+        int halfItemsLength = textLength ~/ 2;
+        if (textLength % 2 == 0) {
+          angleShift =
+              ((halfItemsLength - 1) * textItem.space) + (textItem.space / 2);
+        } else {
+          angleShift = (halfItemsLength * textItem.space);
+        }
+        break;
+      case StartAngleAlignment.end:
+        angleShift = (textLength - 1) * textItem.space;
+        break;
+    }
+    return angleShift;
+  }
+
+  void _debugDrawLines(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.black.withOpacity(0.2)
+      ..strokeWidth = 4
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawLine(Offset.zero, Offset(-(_radius + 40), 0), paint);
+    canvas.drawLine(Offset.zero, Offset((_radius + 40), 0), paint);
+    canvas.drawLine(Offset.zero, Offset(0, -(_radius + 40)), paint);
+    canvas.drawLine(Offset.zero, Offset(0, (_radius + 40)), paint);
+  }
+
   @override
-  bool shouldRepaint(_CircularTextPainter oldDelegate) =>
-      oldDelegate.text != text ||
-      oldDelegate.space != space ||
-      oldDelegate.startAngle != startAngle ||
-      oldDelegate.position != position ||
-      oldDelegate.direction != direction ||
-      oldDelegate.backgroundPaint != backgroundPaint;
+  bool shouldRepaint(_CircularTextPainter oldDelegate) {
+    bool isTextItemsChanged() {
+      bool isChanged = false;
+      for (int i = 0; i < children.length; i++) {
+        if (children[i].isChanged(oldDelegate.children[i])) {
+          isChanged = true;
+          break;
+        }
+      }
+      return isChanged;
+    }
+
+    bool isBackgroundPaintChanged() {
+      return oldDelegate.backgroundPaint.color != backgroundPaint.color ||
+          oldDelegate.backgroundPaint.style != backgroundPaint.style ||
+          oldDelegate.backgroundPaint.strokeWidth !=
+              backgroundPaint.strokeWidth;
+    }
+
+    return isTextItemsChanged() ||
+        oldDelegate.position != position ||
+        oldDelegate.textDirection != textDirection ||
+        isBackgroundPaintChanged();
+  }
 }

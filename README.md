@@ -7,7 +7,7 @@
 Add dependency in `pubspec.yaml`:
 ```yaml
 dependencies:
-  flutter_circular_text: "^0.2.1"
+  flutter_circular_text: "^0.3.0"
 ```
 
 Import in your project:
@@ -19,31 +19,53 @@ import 'package:flutter_circular_text/circular_text.dart';
 
 ```dart
 CircularText(
-    text: Text(
-    "circular text widget",
-    style: TextStyle(
-        fontSize: 25, color: Colors.blue, fontWeight: FontWeight.bold),
+  children: [
+    TextItem(
+      text: Text(
+        "Chuck Norris".toUpperCase(),
+        style: TextStyle(
+          fontSize: 28,
+          color: Colors.blue,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      space: 12,
+      startAngle: -90,
+      startAngleAlignment: StartAngleAlignment.center,
+      direction: CircularTextDirection.clockwise,
     ),
-    radius: 125,
-    space: 10,
-    startAngle: 180,
-    position: CircularTextPosition.inside,
-    direction: CircularTextDirection.clockwise,
-    backgroundPaint: Paint()..color = Colors.grey.shade200,
+    TextItem(
+      text: Text(
+        "top 100 Facts".toUpperCase(),
+        style: TextStyle(
+          fontSize: 20,
+          color: Colors.amberAccent,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      space: 10,
+      startAngle: 90,
+      startAngleAlignment: StartAngleAlignment.center,
+      direction: CircularTextDirection.anticlockwise,
+    ),
+  ],
+  radius: 125,
+  position: CircularTextPosition.inside,
+  backgroundPaint: Paint()..color = Colors.grey.shade200,
 )
 ```
 
 ## Examples
 
-[example](https://github.com/faob-dev/flutter_circular_text/tree/master/example) project contains demo
+[example](https://github.com/faob-dev/flutter_circular_text/tree/master/example) project contains single and multi text demos
 
-### Demo
+### Demos
 
-##### v 0.1.0
-![alt tag](https://raw.githubusercontent.com/faob-dev/flutter_circular_text/master/screenshots/circular_text.gif)
+##### Single Text Demo
+![alt tag](https://raw.githubusercontent.com/faob-dev/flutter_circular_text/master/screenshots/single_circular_text.gif)
 
-##### v 0.2.0
-![alt tag](https://raw.githubusercontent.com/faob-dev/flutter_circular_text/master/screenshots/circular_text1.gif)
+##### Multi Text Demo
+![alt tag](https://raw.githubusercontent.com/faob-dev/flutter_circular_text/master/screenshots/multi_circular_text.jpeg)
 
 ## Changelog
 Check [Changelog](https://github.com/faob-dev/flutter_circular_text/blob/master/CHANGELOG.md) for updates
