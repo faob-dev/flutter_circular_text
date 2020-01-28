@@ -65,7 +65,7 @@ CircularText(
 ![alt tag](https://raw.githubusercontent.com/faob-dev/flutter_circular_text/master/screenshots/single_circular_text.gif)
 
 ##### Multi Text Demo
-![alt tag](https://raw.githubusercontent.com/faob-dev/flutter_circular_text/master/screenshots/multi_circular_text.jpeg)
+<img src="https://raw.githubusercontent.com/faob-dev/flutter_circular_text/master/screenshots/multi_circular_text.jpeg" width=270>
 
 ## Changelog
 Check [Changelog](https://github.com/faob-dev/flutter_circular_text/blob/master/CHANGELOG.md) for updates
