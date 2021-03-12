@@ -26,16 +26,12 @@ class TextItem {
   final CircularTextDirection direction;
 
   TextItem({
-    @required this.text,
+    required this.text,
     this.space = 10,
     this.startAngle = 0,
     this.startAngleAlignment = StartAngleAlignment.start,
     this.direction = CircularTextDirection.clockwise,
-  })  : assert(text != null),
-        assert(space != null && space >= 0),
-        assert(startAngle != null),
-        assert(startAngleAlignment != null),
-        assert(direction != null);
+  }) : assert(space >= 0);
 
   bool isChanged(TextItem oldTextItem) {
     bool isTextChanged() {

@@ -1,10 +1,10 @@
 name: flutter_circular_text
 description: Flutter package which places text in a curved circular path.
-version: 0.3.0
+version: 0.4.0
 homepage: https://github.com/faob-dev/flutter_circular_text
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:

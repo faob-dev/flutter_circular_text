@@ -16,14 +16,12 @@ class CircularText extends StatelessWidget {
   final Paint backgroundPaint;
 
   CircularText({
-    Key key,
-    @required this.children,
+    Key? key,
+    required this.children,
     this.radius = 125,
     this.position = CircularTextPosition.inside,
-    Paint backgroundPaint,
-  })  : assert(children != null),
-        assert(radius != null && radius >= 0),
-        assert(position != null),
+    Paint? backgroundPaint,
+  })  : assert(radius >= 0),
         this.backgroundPaint = backgroundPaint ??
             (backgroundPaint = Paint()..color = Colors.transparent),
         super(key: key);
@@ -55,10 +53,10 @@ class _CircularTextPainter extends CustomPainter {
   double _radius = 0.0;
 
   _CircularTextPainter({
-    this.children,
-    this.position,
-    this.backgroundPaint,
-    this.textDirection,
+    required this.children,
+    required this.position,
+    required this.backgroundPaint,
+    required this.textDirection,
   });
 
   @override
@@ -71,7 +69,10 @@ class _CircularTextPainter extends CustomPainter {
       canvas.save();
       List<TextPainter> _charPainters = [];
       Text text = textItem.text;
-      for (final char in text.data.split("")) {
+
+      String value = text.data ?? "";
+
+      for (final char in value.split("")) {
         _charPainters.add(TextPainter(
             text: TextSpan(text: char, style: text.style),
             textDirection: textDirection)
@@ -147,17 +148,17 @@ class _CircularTextPainter extends CustomPainter {
     return angleShift;
   }
 
-  void _debugDrawLines(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.black.withOpacity(0.2)
-      ..strokeWidth = 4
-      ..style = PaintingStyle.stroke;
+  // void _debugDrawLines(Canvas canvas, Size size) {
+  //   Paint paint = Paint()
+  //     ..color = Colors.black.withOpacity(0.2)
+  //     ..strokeWidth = 4
+  //     ..style = PaintingStyle.stroke;
 
-    canvas.drawLine(Offset.zero, Offset(-(_radius + 40), 0), paint);
-    canvas.drawLine(Offset.zero, Offset((_radius + 40), 0), paint);
-    canvas.drawLine(Offset.zero, Offset(0, -(_radius + 40)), paint);
-    canvas.drawLine(Offset.zero, Offset(0, (_radius + 40)), paint);
-  }
+  //   canvas.drawLine(Offset.zero, Offset(-(_radius + 40), 0), paint);
+  //   canvas.drawLine(Offset.zero, Offset((_radius + 40), 0), paint);
+  //   canvas.drawLine(Offset.zero, Offset(0, -(_radius + 40)), paint);
+  //   canvas.drawLine(Offset.zero, Offset(0, (_radius + 40)), paint);
+  // }
 
   @override
   bool shouldRepaint(_CircularTextPainter oldDelegate) {

@@ -152,7 +152,7 @@ class _SingleTextDemoState extends State<SingleTextDemo> {
                 value: StartAngleAlignment.end,
               ),
             ],
-            onChanged: (value) {
+            onChanged: (dynamic value) {
               setState(() => _startAngleAlignment = value);
             },
           )
@@ -179,7 +179,7 @@ class _SingleTextDemoState extends State<SingleTextDemo> {
           ),
           Checkbox(
             value: _showStroke,
-            onChanged: (value) {
+            onChanged: (dynamic value) {
               setState(() => _showStroke = value);
             },
           )
@@ -197,7 +197,7 @@ class _SingleTextDemoState extends State<SingleTextDemo> {
               style: TextStyle(fontWeight: FontWeight.bold)),
           Checkbox(
             value: _showBackground,
-            onChanged: (value) {
+            onChanged: (dynamic value) {
               setState(() => _showBackground = value);
             },
           )
@@ -224,7 +224,7 @@ class _SingleTextDemoState extends State<SingleTextDemo> {
                 value: CircularTextPosition.outside,
               )
             ],
-            onChanged: (value) {
+            onChanged: (dynamic value) {
               setState(() => _position = value);
             },
           )
@@ -251,7 +251,7 @@ class _SingleTextDemoState extends State<SingleTextDemo> {
                 value: CircularTextDirection.anticlockwise,
               )
             ],
-            onChanged: (value) {
+            onChanged: (dynamic value) {
               setState(() => _direction = value);
             },
           )
