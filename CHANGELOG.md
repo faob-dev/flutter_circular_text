@@ -1,3 +1,6 @@
+## 0.3.1
+* Added null safety
+
 ## 0.3.0
 * Added multi `Text` support
 * Added `StartAngleAlignment` property to align text around `startAngle`

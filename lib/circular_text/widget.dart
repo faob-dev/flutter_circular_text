@@ -1,6 +1,8 @@
 import 'dart:math';
-import 'model.dart';
+
 import 'package:flutter/material.dart';
+
+import 'model.dart';
 
 class CircularText extends StatelessWidget {
   ///List of text
@@ -13,19 +15,15 @@ class CircularText extends StatelessWidget {
   final CircularTextPosition position;
 
   /// Background paint
-  final Paint backgroundPaint;
+  final Paint? backgroundPaint;
 
   CircularText({
-    Key key,
-    @required this.children,
+    Key? key,
+    required this.children,
     this.radius = 125,
     this.position = CircularTextPosition.inside,
-    Paint backgroundPaint,
-  })  : assert(children != null),
-        assert(radius != null && radius >= 0),
-        assert(position != null),
-        this.backgroundPaint = backgroundPaint ??
-            (backgroundPaint = Paint()..color = Colors.transparent),
+    this.backgroundPaint,
+  })  : assert(radius >= 0),
         super(key: key);
 
   @override
@@ -55,11 +53,12 @@ class _CircularTextPainter extends CustomPainter {
   double _radius = 0.0;
 
   _CircularTextPainter({
-    this.children,
-    this.position,
-    this.backgroundPaint,
-    this.textDirection,
-  });
+    required this.children,
+    this.position = CircularTextPosition.inside,
+    Paint? backgroundPaint,
+    required this.textDirection,
+  }) : this.backgroundPaint =
+            backgroundPaint ?? (Paint()..color = Colors.transparent);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -71,7 +70,7 @@ class _CircularTextPainter extends CustomPainter {
       canvas.save();
       List<TextPainter> _charPainters = [];
       Text text = textItem.text;
-      for (final char in text.data.split("")) {
+      for (final char in text.data!.split("")) {
         _charPainters.add(TextPainter(
             text: TextSpan(text: char, style: text.style),
             textDirection: textDirection)
@@ -145,18 +144,6 @@ class _CircularTextPainter extends CustomPainter {
         break;
     }
     return angleShift;
-  }
-
-  void _debugDrawLines(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.black.withOpacity(0.2)
-      ..strokeWidth = 4
-      ..style = PaintingStyle.stroke;
-
-    canvas.drawLine(Offset.zero, Offset(-(_radius + 40), 0), paint);
-    canvas.drawLine(Offset.zero, Offset((_radius + 40), 0), paint);
-    canvas.drawLine(Offset.zero, Offset(0, -(_radius + 40)), paint);
-    canvas.drawLine(Offset.zero, Offset(0, (_radius + 40)), paint);
   }
 
   @override

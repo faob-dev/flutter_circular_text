@@ -7,7 +7,7 @@
 Add dependency in `pubspec.yaml`:
 ```yaml
 dependencies:
-  flutter_circular_text: "^0.3.0"
+  flutter_circular_text: "^0.3.1"
 ```
 
 Import in your project:
