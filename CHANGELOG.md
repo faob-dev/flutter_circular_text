@@ -1,3 +1,6 @@
+## 0.3.2
+* bugfix: avoid an exception when adding a new `TextItem`
+
 ## 0.3.1
 * Added null safety
 
