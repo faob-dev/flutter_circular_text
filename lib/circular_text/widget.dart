@@ -151,7 +151,7 @@ class _CircularTextPainter extends CustomPainter {
     bool isTextItemsChanged() {
       bool isChanged = false;
       for (int i = 0; i < children.length; i++) {
-        if (children[i].isChanged(oldDelegate.children[i])) {
+        if (i >= oldDelegate.children.length || children[i].isChanged(oldDelegate.children[i])) {
           isChanged = true;
           break;
         }
