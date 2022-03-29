@@ -1,3 +1,9 @@
+## 0.3.3
+* bugfix: correct printing of unicode/emoji chars
+
+## 0.3.2
+* bugfix: avoid an exception when adding a new `TextItem`
+
 ## 0.3.1
 * Added null safety
 

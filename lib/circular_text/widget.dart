@@ -70,9 +70,9 @@ class _CircularTextPainter extends CustomPainter {
       canvas.save();
       List<TextPainter> _charPainters = [];
       Text text = textItem.text;
-      for (final char in text.data!.split("")) {
+      for (final int rune in text.data!.runes) {
         _charPainters.add(TextPainter(
-            text: TextSpan(text: char, style: text.style),
+            text: TextSpan(text: String.fromCharCode(rune), style: text.style),
             textDirection: textDirection)
           ..layout());
       }
@@ -151,7 +151,7 @@ class _CircularTextPainter extends CustomPainter {
     bool isTextItemsChanged() {
       bool isChanged = false;
       for (int i = 0; i < children.length; i++) {
-        if (children[i].isChanged(oldDelegate.children[i])) {
+        if (i >= oldDelegate.children.length || children[i].isChanged(oldDelegate.children[i])) {
           isChanged = true;
           break;
         }
