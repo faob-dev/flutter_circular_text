@@ -70,9 +70,9 @@ class _CircularTextPainter extends CustomPainter {
       canvas.save();
       List<TextPainter> _charPainters = [];
       Text text = textItem.text;
-      for (final char in text.data!.split("")) {
+      for (final int rune in text.data!.runes) {
         _charPainters.add(TextPainter(
-            text: TextSpan(text: char, style: text.style),
+            text: TextSpan(text: String.fromCharCode(rune), style: text.style),
             textDirection: textDirection)
           ..layout());
       }
